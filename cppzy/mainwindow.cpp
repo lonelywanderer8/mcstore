@@ -87,18 +87,7 @@ void MainWindow::chushihua()
     ui->radioButton_13->setChecked(true);
     ui->radioButton_14->setChecked(false);
 }
-
-void MainWindow::on_lineEdit_3_textChanged(const QString &arg1)
-{
-       ui->label_7->setNum(arg1.toDouble()*12);                              //由用户输入的年数显示贷款总期数
-
-}
-
-void MainWindow::on_lineEdit_6_textChanged(const QString &arg1)
-{
-    ui->label_42->setNum(arg1.toDouble()*12);
-}
-
+//当用户选择不同计算方式时切换页面
 void MainWindow::on_radioButton_1_clicked(bool checked)
 {
     if(checked)
@@ -112,7 +101,7 @@ void MainWindow::on_radioButton_2_clicked(bool checked)
 {
     if(checked)
     {
-        ui->stackedWidge_1->setCurrentIndex(1);                       //当用户选择不同计算方式时切换页面
+        ui->stackedWidge_1->setCurrentIndex(1);
         ui->radioButton_1->setChecked(false);
     }
 }
@@ -134,8 +123,17 @@ void MainWindow::on_radioButton_12_clicked(bool checked)
         ui->radioButton_11->setChecked(false);
     }
 }
+//由用户输入的年数显示贷款总期数
+void MainWindow::on_lineEdit_3_textChanged(const QString &arg1)
+{
+       ui->label_7->setNum(arg1.toDouble()*12);
 
+}
 
+void MainWindow::on_lineEdit_6_textChanged(const QString &arg1)
+{
+    ui->label_42->setNum(arg1.toDouble()*12);
+}
 void MainWindow::on_lineEdit_13_textChanged(const QString &arg1)
 {
    ui->label_45->setNum(arg1.toDouble()*12);
@@ -148,59 +146,7 @@ void MainWindow::on_lineEdit_19_textChanged(const QString &arg1)
 
 
 
-void MainWindow::on_pushButton_clicked()
-{
-    danjia1=ui->lineEdit->text().toDouble();
-    mianji1=ui->lineEdit_2->text().toDouble();
-    nianshu1=ui->lineEdit_3->text().toDouble();
-    chengshu1=ui->lineEdit_20->text().toDouble();
-    lilv1=ui->lineEdit_4->text().toDouble();
-    if(danjia1<=0 || mianji1<=0 ||nianshu1<=0 ||chengshu1 <=0 ||lilv1<=0)
-    {
-
-        ui->lineEdit->clear();
-        ui->lineEdit_2->clear();
-        ui->lineEdit_3->clear();
-        ui->lineEdit_4->clear();
-        ui->lineEdit_20->clear();
-        ui->stackedWidget->setCurrentIndex(2);
-        gengxin();
-    }
-    else
-    {
-        if(fangshi==0)
-        {
-            ui->stackedWidget->setCurrentIndex(0);
-            result=danjia1*mianji1*chengshu1/10*((lilv1/12)*pow((1+lilv1/12),nianshu1*12))/(pow((1+lilv1/12),nianshu1*12)-1);
-            shoufu=(danjia1*mianji1)*(1-chengshu1/10);
-            zonge=result*nianshu1*12;
-            lixi=zonge-danjia1*mianji1*chengshu1/10;
-            ui->label_55->setText(QString::number(result,'f',2));
-            ui->label_56->setText(QString::number(shoufu,'f',2));
-            ui->label_58->setText(QString::number(lixi,'f',2));
-            ui->label_60->setText(QString::number(zonge,'f',2));
-            chushihua();
-        }
-        else
-        {
-            ui->stackedWidget->setCurrentIndex(1);
-            shoufu=(danjia1*mianji1)*(1-chengshu1/10);;
-            result=(danjia1*mianji1*chengshu1/10/(nianshu1*12))+(danjia1*mianji1*chengshu1/10)*lilv1/12;
-            dijian=(danjia1*mianji1*chengshu1/10)/(nianshu1*12)*(lilv1/12);
-            zonge=result*(nianshu1*12)-nianshu1*12*(nianshu1*12-1)/2*dijian;
-            lixi=zonge-(danjia1*mianji1*chengshu1/10);
-            ui->label_65->setText(QString::number(shoufu,'f',2));
-            ui->label_66->setText(QString::number(result,'f',2));
-            ui->label_70->setText(QString::number(dijian,'f',2));
-            ui->label_67->setText(QString::number(lixi,'f',2));
-            ui->label_68->setText(QString::number(zonge,'f',2));
-            chushihua();
-        }
-    }
-
-
-}
-
+//根据用户的选择来判断是等额本金还是等额本息，等额本息则fangshi值为0，等额本金值为1；
 void MainWindow::on_radioButton_3_clicked(bool checked)
 {
     if(checked)
@@ -237,7 +183,7 @@ void MainWindow::on_radioButton_6_clicked(bool checked)
     ui->radioButton_5->setChecked(false);
 }
 
-void MainWindow::on_radioButton_9_clicked(bool checked)             //判断用户选择等额本息借款还是等额本金借款
+void MainWindow::on_radioButton_9_clicked(bool checked)
 {
     if(checked)
     {
@@ -296,7 +242,59 @@ void MainWindow::on_lineEdit_10_textChanged(const QString &arg1)
     ui->label_46->setNum(arg1.toDouble()*12);
 }
 
+//当用户按下计算按钮时进行数据获取和计算，并将计算结果显示出来
+void MainWindow::on_pushButton_clicked()
+{
+    danjia1=ui->lineEdit->text().toDouble();
+    mianji1=ui->lineEdit_2->text().toDouble();
+    nianshu1=ui->lineEdit_3->text().toDouble();
+    chengshu1=ui->lineEdit_20->text().toDouble();
+    lilv1=ui->lineEdit_4->text().toDouble();
+    if(danjia1<=0 || mianji1<=0 ||nianshu1<=0 ||chengshu1 <=0 ||lilv1<=0 ||chengshu1>10)
+    {
 
+        ui->lineEdit->clear();
+        ui->lineEdit_2->clear();
+        ui->lineEdit_3->clear();
+        ui->lineEdit_4->clear();
+        ui->lineEdit_20->clear();
+        ui->stackedWidget->setCurrentIndex(2);
+        gengxin();
+    }
+    else
+    {
+        if(fangshi==0)
+        {
+            ui->stackedWidget->setCurrentIndex(0);
+            result=danjia1*mianji1*chengshu1/10*((lilv1/12)*pow((1+lilv1/12),nianshu1*12))/(pow((1+lilv1/12),nianshu1*12)-1);
+            shoufu=(danjia1*mianji1)*(1-chengshu1/10);
+            zonge=result*nianshu1*12;
+            lixi=zonge-danjia1*mianji1*chengshu1/10;
+            ui->label_55->setText(QString::number(result,'f',2));
+            ui->label_56->setText(QString::number(shoufu,'f',2));
+            ui->label_58->setText(QString::number(lixi,'f',2));
+            ui->label_60->setText(QString::number(zonge,'f',2));
+            chushihua();
+        }
+        else
+        {
+            ui->stackedWidget->setCurrentIndex(1);
+            shoufu=(danjia1*mianji1)*(1-chengshu1/10);;
+            result=(danjia1*mianji1*chengshu1/10/(nianshu1*12))+(danjia1*mianji1*chengshu1/10)*lilv1/12;
+            dijian=(danjia1*mianji1*chengshu1/10)/(nianshu1*12)*(lilv1/12);
+            zonge=result*(nianshu1*12)-nianshu1*12*(nianshu1*12-1)/2*dijian;
+            lixi=zonge-(danjia1*mianji1*chengshu1/10);
+            ui->label_65->setText(QString::number(shoufu,'f',2));
+            ui->label_66->setText(QString::number(result,'f',2));
+            ui->label_70->setText(QString::number(dijian,'f',2));
+            ui->label_67->setText(QString::number(lixi,'f',2));
+            ui->label_68->setText(QString::number(zonge,'f',2));
+            chushihua();
+        }
+    }
+
+
+}
 void MainWindow::on_pushButton_3_clicked()
 {
     zonge1=ui->lineEdit_5->text().toDouble();
@@ -307,7 +305,7 @@ void MainWindow::on_pushButton_3_clicked()
         ui->lineEdit_5->clear();
         ui->lineEdit_6->clear();
         ui->lineEdit_7->clear();
-        ui->stackedWidget->setCurrentIndex(2);                  //当用户按下计算按钮时进行数据获取和计算，并将计算结果显示出来
+        ui->stackedWidget->setCurrentIndex(2);
         gengxin();
     }
     else
@@ -349,7 +347,7 @@ void MainWindow::on_pushButton_4_clicked()
     nianshu1=ui->lineEdit_10->text().toDouble();
     chengshu1=ui->lineEdit_22->text().toDouble();
     lilv1=ui->lineEdit_11->text().toDouble();
-    if(danjia1<=0 || mianji1<=0 ||nianshu1<=0 ||chengshu1 <=0 ||lilv1<=0)
+    if(danjia1<=0 || mianji1<=0 ||nianshu1<=0 ||chengshu1 <=0 ||lilv1<=0||chengshu1>10)
     {
         ui->lineEdit_8->clear();
         ui->lineEdit_9->clear();
